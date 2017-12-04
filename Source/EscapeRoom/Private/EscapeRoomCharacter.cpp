@@ -14,12 +14,7 @@ AEscapeRoomCharacter::AEscapeRoomCharacter()
 // Called when the game starts or when spawned
 void AEscapeRoomCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-	
-	if (GEngine) 
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("HELLO I'M A CHARACTER"));
-	}
+	Super::BeginPlay();		
 }
 
 // Called every frame
@@ -27,6 +22,43 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+
+	FVector viewLoc;
+	FRotator viewRot;
+	Controller->GetPlayerViewPoint(viewLoc, viewRot);
+
+	const FVector startTrace = viewLoc;
+	const FVector direction = viewRot.Vector();
+	const FVector endTrace = startTrace + direction * UseDistance;
+
+	FCollisionQueryParams traceParams(FName(TEXT("Use Trace")), true, Controller->GetPawn());
+	traceParams.bTraceAsyncScene = true;
+	traceParams.bReturnPhysicalMaterial = true;
+
+	FHitResult hit(ForceInit);
+	Controller->GetWorld()->LineTraceSingleByChannel(hit, startTrace, endTrace, ECC_Pawn, traceParams);
+
+	AActor* hitActor = hit.GetActor();
+	
+	if (hitActor) 
+	{		
+		UExaminable* examinableNew = hitActor->FindComponentByClass<UExaminable>();
+				
+		if (_examinable != nullptr && _examinable != examinableNew) 
+		{
+			_examinable->IsHighlight(false);
+		}
+		_examinable = examinableNew;
+		_examinable->IsHighlight(true);
+	}
+	else 
+	{
+		if (_examinable != nullptr)
+		{
+			_examinable->IsHighlight(false);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -41,6 +73,8 @@ void AEscapeRoomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &Super::Jump);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &Super::StopJumping);
+
+	PlayerInputComponent->BindAction("Use", EInputEvent::IE_Released, this, &AEscapeRoomCharacter::Use);
 }
 
 void AEscapeRoomCharacter::MoveForward(float val)
@@ -69,5 +103,10 @@ void AEscapeRoomCharacter::MoveRight(float val)
 		const FVector direction = FRotationMatrix(rotation).GetScaledAxis(EAxis::Y);
 		AddMovementInput(direction, val);
 	}
+}
+
+void AEscapeRoomCharacter::Use()
+{
+	
 }
 

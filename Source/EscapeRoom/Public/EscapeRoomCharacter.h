@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+
 #include "Engine/Engine.h"
 #include "CoreMinimal.h"
+#include "Casts.h"
+#include "Examinable.h"
 #include "GameFramework/Character.h"
 #include "EscapeRoomCharacter.generated.h"
 
@@ -30,9 +33,17 @@ public:
 		void MoveForward(float val);
 	UFUNCTION()
 		void MoveRight(float val);
+	UFUNCTION()
+		void Use();
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = EscapeRoomCharacter)
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = EscapeRoomCharacter)
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = EscapeRoomCharacter)
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerMusicSkill)			
+	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomProperties)
+		int UseDistance = 200;
+
+private:
+	UExaminable* _examinable;
 };
