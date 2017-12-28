@@ -30,4 +30,6 @@ public:
 		FString ExamineText = "Don't leave this text naked";
 
 	void IsHighlight(bool isHighlight);
+
+	void Examine();
 };

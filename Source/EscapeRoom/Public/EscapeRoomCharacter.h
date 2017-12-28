@@ -7,6 +7,7 @@
 #include "Casts.h"
 #include "Examinable.h"
 #include "GameFramework/Character.h"
+#include "Widget.h"
 #include "EscapeRoomCharacter.generated.h"
 
 UCLASS()
@@ -44,6 +45,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomProperties)
 		int UseDistance = 200;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomProperties)
+		TSubclassOf<UUserWidget> TextWidget;
+
+	UPROPERTY(BlueprintReadOnly)
+		FString WidgetText;
+
 private:
 	UExaminable* _examinable;
+	UUserWidget* _textWidget;
 };

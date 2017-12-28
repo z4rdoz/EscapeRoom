@@ -2,6 +2,7 @@
 
 #include "EscapeRoomCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 AEscapeRoomCharacter::AEscapeRoomCharacter()
@@ -13,7 +14,16 @@ AEscapeRoomCharacter::AEscapeRoomCharacter()
 // Called when the game starts or when spawned
 void AEscapeRoomCharacter::BeginPlay()
 {
-	Super::BeginPlay();		
+	Super::BeginPlay();	
+
+	if (TextWidget != nullptr)
+	{
+		_textWidget = CreateWidget<UUserWidget>(GetWorld(), TextWidget);
+		if (_textWidget)
+		{
+			_textWidget->AddToViewport();						
+		}
+	}
 }
 
 // Called every frame
@@ -52,6 +62,11 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 			{
 				_examinable = examinableNew;
 				_examinable->IsHighlight(true);
+				WidgetText = _examinable->ExamineText;
+			}
+			else
+			{
+				WidgetText = "";
 			}
 		}
 		else
@@ -59,6 +74,8 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 			if (_examinable != nullptr)
 			{
 				_examinable->IsHighlight(false);
+				_examinable = nullptr;
+				WidgetText = "";
 			}
 		}
 	}

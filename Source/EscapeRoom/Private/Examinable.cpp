@@ -32,8 +32,8 @@ void UExaminable::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 }
 
 void UExaminable::IsHighlight(bool isHighlight)
-{
-	
+{	
 	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 	primitiveComponent->SetRenderCustomDepth(isHighlight);
 }
+
