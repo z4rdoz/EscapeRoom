@@ -37,3 +37,7 @@ void UExaminable::IsHighlight(bool isHighlight)
 	primitiveComponent->SetRenderCustomDepth(isHighlight);
 }
 
+void UExaminable::Examine()
+{
+}
+
