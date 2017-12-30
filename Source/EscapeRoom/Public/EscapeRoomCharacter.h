@@ -5,9 +5,10 @@
 #include "Engine/Engine.h"
 #include "CoreMinimal.h"
 #include "Casts.h"
-#include "Examinable.h"
+#include "ExaminableComponent.h"
 #include "GameFramework/Character.h"
 #include "Widget.h"
+#include "EscapeRoomSingletonLibrary.h"
 #include "EscapeRoomCharacter.generated.h"
 
 UCLASS()
@@ -36,6 +37,8 @@ public:
 		void MoveRight(float val);
 	UFUNCTION()
 		void Use();
+	UFUNCTION()
+		void Examine();
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = EscapeRoomCharacter)
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = EscapeRoomCharacter)
@@ -43,15 +46,9 @@ public:
 	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomProperties)
-		int UseDistance = 200;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomProperties)
-		TSubclassOf<UUserWidget> TextWidget;
-
-	UPROPERTY(BlueprintReadOnly)
-		FString WidgetText;
+		int UseDistance = 100;
 
 private:
-	UExaminable* _examinable;
-	UUserWidget* _textWidget;
+	UExaminableComponent* _examinable;
+	UEscapeRoomSingleton* _singleton;
 };

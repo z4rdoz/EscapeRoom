@@ -3,6 +3,7 @@
 #include "EscapeRoomCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "BaseWidget.h"
 
 // Sets default values
 AEscapeRoomCharacter::AEscapeRoomCharacter()
@@ -16,22 +17,20 @@ void AEscapeRoomCharacter::BeginPlay()
 {
 	Super::BeginPlay();	
 
-	if (TextWidget != nullptr)
+	_singleton = UEscapeRoomSingletonLibrary::GetSingleton();	
+
+	if (_singleton)
 	{
-		_textWidget = CreateWidget<UUserWidget>(GetWorld(), TextWidget);
-		if (_textWidget)
-		{
-			_textWidget->AddToViewport();						
-		}
+		_singleton->InitWidgets(GetWorld());
 	}
 }
 
 // Called every frame
 void AEscapeRoomCharacter::Tick(float DeltaTime)
-{	
+{
 	Super::Tick(DeltaTime);
 
-	if (Controller != nullptr) 
+	if (Controller != nullptr)
 	{
 		FVector viewLoc;
 		FRotator viewRot;
@@ -47,35 +46,31 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 
 		FHitResult hit(ForceInit);
 		Controller->GetWorld()->LineTraceSingleByChannel(hit, startTrace, endTrace, ECC_Pawn, traceParams);
+		AActor* hitActor = hit.GetActor();		
 
-		AActor* hitActor = hit.GetActor();
-
-		if (hitActor)
-		{
-			UExaminable* examinableNew = hitActor->FindComponentByClass<UExaminable>();
-
-			if (_examinable != nullptr && _examinable != examinableNew)
+		//Handle examine/use target
+		if (_singleton->TargetWidget)
+		{			
+			if (hitActor)
 			{
-				_examinable->IsHighlight(false);
-			}
-			if (examinableNew != nullptr)
-			{
-				_examinable = examinableNew;
-				_examinable->IsHighlight(true);
-				WidgetText = _examinable->ExamineText;
+				UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();				
+				if (_examinable != nullptr && _examinable != examinableNew)
+				{
+					_examinable->OnMouseOut();
+				}
+				if (examinableNew != nullptr)
+				{
+					_examinable = examinableNew;				
+					_examinable->OnMouseIn();
+				}
 			}
 			else
 			{
-				WidgetText = "";
-			}
-		}
-		else
-		{
-			if (_examinable != nullptr)
-			{
-				_examinable->IsHighlight(false);
-				_examinable = nullptr;
-				WidgetText = "";
+				if (_examinable != nullptr)
+				{
+					_examinable->OnMouseOut();
+					_examinable = nullptr;				
+				}
 			}
 		}
 	}
@@ -96,7 +91,8 @@ void AEscapeRoomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 		PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ACharacter::StopJumping);
 
-		PlayerInputComponent->BindAction("Use", EInputEvent::IE_Released, this, &AEscapeRoomCharacter::Use);
+		PlayerInputComponent->BindAction("Use", EInputEvent::IE_Pressed, this, &AEscapeRoomCharacter::Use);
+		PlayerInputComponent->BindAction("Examine", EInputEvent::IE_Pressed, this, &AEscapeRoomCharacter::Examine);
 	}
 }
 
@@ -128,8 +124,16 @@ void AEscapeRoomCharacter::MoveRight(float val)
 	}
 }
 
+void AEscapeRoomCharacter::Examine()
+{
+	if (_examinable)
+	{
+		_examinable->Examine();
+	}
+}
+
 void AEscapeRoomCharacter::Use()
 {
-	
+
 }
 
