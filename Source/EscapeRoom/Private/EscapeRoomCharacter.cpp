@@ -21,7 +21,7 @@ void AEscapeRoomCharacter::BeginPlay()
 
 	if (_singleton)
 	{
-		_singleton->InitWidgets(GetWorld());
+		_singleton->Init(GetWorld());
 	}
 }
 
@@ -46,30 +46,35 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 
 		FHitResult hit(ForceInit);
 		Controller->GetWorld()->LineTraceSingleByChannel(hit, startTrace, endTrace, ECC_Pawn, traceParams);
-		AActor* hitActor = hit.GetActor();		
+		AActor* hitActor = hit.GetActor();
 
 		//Handle examine/use target
 		if (_singleton->TargetWidget)
-		{			
-			if (hitActor)
+		{
+
+			//Do examining
+			if (!bPressedJump && _singleton->EscapeRoomState != EEscapeRoomState::Examining)
 			{
-				UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();				
-				if (_examinable != nullptr && _examinable != examinableNew)
+				if (hitActor)
 				{
-					_examinable->OnMouseOut();
+					UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();
+					if (_examinable != nullptr && _examinable != examinableNew)
+					{
+						_examinable->OnMouseOut();
+					}
+					if (examinableNew != nullptr)
+					{
+						_examinable = examinableNew;
+						_examinable->OnMouseIn();
+					}
 				}
-				if (examinableNew != nullptr)
+				else
 				{
-					_examinable = examinableNew;				
-					_examinable->OnMouseIn();
-				}
-			}
-			else
-			{
-				if (_examinable != nullptr)
-				{
-					_examinable->OnMouseOut();
-					_examinable = nullptr;				
+					if (_examinable != nullptr)
+					{
+						_examinable->OnMouseOut();
+						_examinable = nullptr;
+					}
 				}
 			}
 		}
@@ -85,10 +90,10 @@ void AEscapeRoomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		PlayerInputComponent->BindAxis("MoveForward", this, &AEscapeRoomCharacter::MoveForward);
 		PlayerInputComponent->BindAxis("MoveRight", this, &AEscapeRoomCharacter::MoveRight);
-		PlayerInputComponent->BindAxis("Turn", this, &AEscapeRoomCharacter::AddControllerYawInput);
-		PlayerInputComponent->BindAxis("LookUp", this, &AEscapeRoomCharacter::AddControllerPitchInput);
+		PlayerInputComponent->BindAxis("Turn", this, &AEscapeRoomCharacter::YMouse);
+		PlayerInputComponent->BindAxis("LookUp", this, &AEscapeRoomCharacter::XMouse);
 
-		PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+		PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AEscapeRoomCharacter::EJump);
 		PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ACharacter::StopJumping);
 
 		PlayerInputComponent->BindAction("Use", EInputEvent::IE_Pressed, this, &AEscapeRoomCharacter::Use);
@@ -96,9 +101,25 @@ void AEscapeRoomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	}
 }
 
+void AEscapeRoomCharacter::YMouse(float val)
+{
+	if (_singleton->EscapeRoomState == EEscapeRoomState::Default)
+	{
+		AddControllerYawInput(val);
+	}
+}
+
+void AEscapeRoomCharacter::XMouse(float val)
+{
+	if (_singleton->EscapeRoomState == EEscapeRoomState::Default)
+	{
+		AddControllerPitchInput(val);
+	}
+}
+
 void AEscapeRoomCharacter::MoveForward(float val)
 {
-	if (Controller != nullptr && val != 0.0f)
+	if (Controller != nullptr && val != 0.0f && _singleton->EscapeRoomState == EEscapeRoomState::Default)
 	{
 		FRotator rotation = Controller->GetControlRotation();
 		
@@ -116,7 +137,7 @@ void AEscapeRoomCharacter::MoveForward(float val)
 
 void AEscapeRoomCharacter::MoveRight(float val)
 {
-	if (Controller != nullptr && val != 0.0f)
+	if (Controller != nullptr && val != 0.0f && _singleton->EscapeRoomState == EEscapeRoomState::Default)
 	{
 		const FRotator rotation = Controller->GetControlRotation();
 		const FVector direction = FRotationMatrix(rotation).GetScaledAxis(EAxis::Y);
@@ -125,15 +146,39 @@ void AEscapeRoomCharacter::MoveRight(float val)
 }
 
 void AEscapeRoomCharacter::Examine()
-{
-	if (_examinable)
+{		
+	if (!TryStopExamining() && _examinable)
 	{
 		_examinable->Examine();
+		_singleton->EscapeRoomState = EEscapeRoomState::Examining;
 	}
 }
 
+
 void AEscapeRoomCharacter::Use()
 {
+	if (!TryStopExamining())
+	{
 
+	}
 }
 
+void AEscapeRoomCharacter::EJump()
+{
+	if (!TryStopExamining())
+	{
+		Jump();
+	}
+}
+
+bool AEscapeRoomCharacter::TryStopExamining()
+{
+	//Checks if input is free to fulfill it's primary purpose, or if it's doing something else
+	if (_examinable && _singleton->EscapeRoomState == EEscapeRoomState::Examining)
+	{
+		_examinable->StopExamining();
+		_singleton->EscapeRoomState = EEscapeRoomState::Default;
+		return true;
+	}
+	return false;
+}

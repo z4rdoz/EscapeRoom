@@ -36,9 +36,16 @@ public:
 	UFUNCTION()
 		void MoveRight(float val);
 	UFUNCTION()
+		void YMouse(float val);
+	UFUNCTION()
+		void XMouse(float val);
+	UFUNCTION()
 		void Use();
 	UFUNCTION()
 		void Examine();
+	UFUNCTION()
+		void EJump();
+	
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = EscapeRoomCharacter)
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = EscapeRoomCharacter)
@@ -51,4 +58,6 @@ public:
 private:
 	UExaminableComponent* _examinable;
 	UEscapeRoomSingleton* _singleton;
+
+	bool TryStopExamining();
 };

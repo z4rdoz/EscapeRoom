@@ -6,6 +6,8 @@
 #include "CoreMinimal.h"
 #include "Components/PrimitiveComponent.h"
 #include "UObject/NoExportTypes.h"
+#include "EscapeRoomSingleton.h"
+#include "EscapeRoomSingletonLibrary.h"
 #include "MiscStatics.generated.h"
 
 /**
@@ -15,7 +17,6 @@ UCLASS()
 class ESCAPEROOM_API UMiscStatics : public UObject
 {
 	GENERATED_BODY()
-	
 
 
 	// Credit to user Rama for guidelines on static library class and the following function
