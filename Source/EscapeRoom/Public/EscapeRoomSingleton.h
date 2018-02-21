@@ -14,6 +14,8 @@ enum class EEscapeRoomState : uint8
 {
 	Default,
 	Examining
+	//An example of the DiaplyName property. Credit to Rama's (MANY) wiki entries for help exposing to blueprints
+	//https://wiki.unrealengine.com/Enums_For_Both_C%2B%2B_and_BP
 	//VE_Song	UMETA(DisplayName = "Song")
 };
 
