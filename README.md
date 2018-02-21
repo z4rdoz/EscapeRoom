@@ -1,5 +1,3 @@
 ## Escape Room!
 
-This is more or less a proof of concept. A playground for puzzle creation and narrative ideas. Or just a bunch of test code, we'll see.
-
-This requires the UE4 StarterContent is built on version 4.18.1.
+This is an escape room game where you "escape" an abusive relationship. It's in its early stages right now, but I'm using this project to get more familiar with UE4, play with some narrative ideas, practice iterating on puzzle design, and to specifically work on pacing.
