@@ -28,7 +28,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable, meta = (MultiLine = true))
 		FString ExamineText = "Don't leave this text naked";
 
 	void OnMouseIn();
