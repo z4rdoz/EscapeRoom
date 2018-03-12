@@ -8,8 +8,9 @@
 #include "ExaminableComponent.h"
 #include "GameFramework/Character.h"
 #include "Widget.h"
-#include "EscapeRoomSingletonLibrary.h"
+#include "EscapeRoomHUD.h"
 #include "EscapeRoomCharacter.generated.h"
+
 
 UCLASS()
 class ESCAPEROOM_API AEscapeRoomCharacter : public ACharacter
@@ -57,7 +58,7 @@ public:
 
 private:
 	UExaminableComponent* _examinable;
-	UEscapeRoomSingleton* _singleton;
+	AEscapeRoomHUD* _hud;
 
 	bool TryStopExamining();
 };

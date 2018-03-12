@@ -16,7 +16,7 @@ void UExaminableComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	_singleton = UEscapeRoomSingletonLibrary::GetSingleton();
+	_hud = Cast<AEscapeRoomHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 
@@ -32,28 +32,28 @@ void UExaminableComponent::OnMouseIn()
 {
 	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 	primitiveComponent->SetRenderCustomDepth(true);
-	_singleton->TargetWidget->ShowExamine = ESlateVisibility::Visible;
+	_hud->TargetWidget->ShowExamine = ESlateVisibility::Visible;
 }
 
 void UExaminableComponent::OnMouseOut()
 {
 	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 	primitiveComponent->SetRenderCustomDepth(false);
-	_singleton->TargetWidget->ShowExamine = ESlateVisibility::Hidden;
+	_hud->TargetWidget->ShowExamine = ESlateVisibility::Hidden;
 }
 
 void UExaminableComponent::Examine()
 {
-	_singleton->ExamineWidget->DialogText = ExamineText;
-	_singleton->ExamineWidget->SetVisibility(ESlateVisibility::Visible);
-	_singleton->TargetWidget->ShowTarget = ESlateVisibility::Hidden;
+	_hud->ExamineWidget->DialogText = ExamineText;
+	_hud->ExamineWidget->SetVisibility(ESlateVisibility::Visible);
+	_hud->TargetWidget->ShowTarget = ESlateVisibility::Hidden;
 	OnMouseOut();
 }
 
 void UExaminableComponent::StopExamining()
 {
-	_singleton->ExamineWidget->SetVisibility(ESlateVisibility::Hidden);	
-	_singleton->TargetWidget->ShowTarget = ESlateVisibility::Visible;
+	_hud->ExamineWidget->SetVisibility(ESlateVisibility::Hidden);
+	_hud->TargetWidget->ShowTarget = ESlateVisibility::Visible;
 	OnMouseIn();	
 }
 

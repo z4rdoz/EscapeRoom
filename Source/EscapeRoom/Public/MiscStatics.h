@@ -6,8 +6,6 @@
 #include "CoreMinimal.h"
 #include "Components/PrimitiveComponent.h"
 #include "UObject/NoExportTypes.h"
-#include "EscapeRoomSingleton.h"
-#include "EscapeRoomSingletonLibrary.h"
 #include "MiscStatics.generated.h"
 
 /**

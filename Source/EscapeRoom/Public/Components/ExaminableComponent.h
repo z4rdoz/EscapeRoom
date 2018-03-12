@@ -7,7 +7,7 @@
 #include "CoreMinimal.h"
 #include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "Components/ActorComponent.h"
-#include "EscapeRoomSingletonLibrary.h"
+#include "EscapeRoomHUD.h"
 #include "ExaminableComponent.generated.h"
 
 
@@ -40,5 +40,5 @@ public:
 	void StopExamining();
 
 private:
-	UEscapeRoomSingleton * _singleton;
+	AEscapeRoomHUD* _hud;
 };

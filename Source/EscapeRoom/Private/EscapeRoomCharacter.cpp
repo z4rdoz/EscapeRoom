@@ -15,16 +15,10 @@ AEscapeRoomCharacter::AEscapeRoomCharacter()
 // Called when the game starts or when spawned
 void AEscapeRoomCharacter::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 
-	_singleton = UEscapeRoomSingletonLibrary::GetSingleton();	
-
-	if (_singleton)
-	{
-		_singleton->Init(GetWorld());
-	}
+	_hud = Cast<AEscapeRoomHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
-
 // Called every frame
 void AEscapeRoomCharacter::Tick(float DeltaTime)
 {
@@ -48,36 +42,33 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 		Controller->GetWorld()->LineTraceSingleByChannel(hit, startTrace, endTrace, ECC_Pawn, traceParams);
 		AActor* hitActor = hit.GetActor();
 
-		//Handle examine/use target
-		if (_singleton->TargetWidget)
-		{
-
+		//Handle examine/use target	
 			//Do examining
-			if (!bPressedJump && _singleton->EscapeRoomState != EEscapeRoomState::Examining)
+		if (!bPressedJump && _hud->GetGameState() != EEscapeRoomState::Examining)
+		{
+			if (hitActor)
 			{
-				if (hitActor)
+				UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();
+				if (_examinable != nullptr && _examinable != examinableNew)
 				{
-					UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();
-					if (_examinable != nullptr && _examinable != examinableNew)
-					{
-						_examinable->OnMouseOut();
-					}
-					if (examinableNew != nullptr)
-					{
-						_examinable = examinableNew;
-						_examinable->OnMouseIn();
-					}
+					_examinable->OnMouseOut();
 				}
-				else
+				if (examinableNew != nullptr)
 				{
-					if (_examinable != nullptr)
-					{
-						_examinable->OnMouseOut();
-						_examinable = nullptr;
-					}
+					_examinable = examinableNew;
+					_examinable->OnMouseIn();
+				}
+			}
+			else
+			{
+				if (_examinable != nullptr)
+				{
+					_examinable->OnMouseOut();
+					_examinable = nullptr;
 				}
 			}
 		}
+
 	}
 }
 
@@ -103,7 +94,7 @@ void AEscapeRoomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void AEscapeRoomCharacter::YMouse(float val)
 {
-	if (_singleton->EscapeRoomState == EEscapeRoomState::Default)
+	if (_hud->GetGameState() == EEscapeRoomState::Default)
 	{
 		AddControllerYawInput(val);
 	}
@@ -111,7 +102,7 @@ void AEscapeRoomCharacter::YMouse(float val)
 
 void AEscapeRoomCharacter::XMouse(float val)
 {
-	if (_singleton->EscapeRoomState == EEscapeRoomState::Default)
+	if (_hud->GetGameState() == EEscapeRoomState::Default)
 	{
 		AddControllerPitchInput(val);
 	}
@@ -119,7 +110,7 @@ void AEscapeRoomCharacter::XMouse(float val)
 
 void AEscapeRoomCharacter::MoveForward(float val)
 {
-	if (Controller != nullptr && val != 0.0f && _singleton->EscapeRoomState == EEscapeRoomState::Default)
+	if (Controller != nullptr && val != 0.0f && _hud->GetGameState() == EEscapeRoomState::Default)
 	{
 		FRotator rotation = Controller->GetControlRotation();
 		
@@ -137,7 +128,7 @@ void AEscapeRoomCharacter::MoveForward(float val)
 
 void AEscapeRoomCharacter::MoveRight(float val)
 {
-	if (Controller != nullptr && val != 0.0f && _singleton->EscapeRoomState == EEscapeRoomState::Default)
+	if (Controller != nullptr && val != 0.0f && _hud->GetGameState() == EEscapeRoomState::Default)
 	{
 		const FRotator rotation = Controller->GetControlRotation();
 		const FVector direction = FRotationMatrix(rotation).GetScaledAxis(EAxis::Y);
@@ -150,7 +141,7 @@ void AEscapeRoomCharacter::Examine()
 	if (!TryStopExamining() && _examinable)
 	{
 		_examinable->Examine();
-		_singleton->EscapeRoomState = EEscapeRoomState::Examining;
+		_hud->SetGameState(EEscapeRoomState::Examining);
 	}
 }
 
@@ -174,10 +165,10 @@ void AEscapeRoomCharacter::EJump()
 bool AEscapeRoomCharacter::TryStopExamining()
 {
 	//Checks if input is free to fulfill it's primary purpose, or if it's doing something else
-	if (_examinable && _singleton->EscapeRoomState == EEscapeRoomState::Examining)
+	if (_examinable && _hud->GetGameState() == EEscapeRoomState::Examining)
 	{
 		_examinable->StopExamining();
-		_singleton->EscapeRoomState = EEscapeRoomState::Default;
+		_hud->SetGameState(EEscapeRoomState::Default);
 		return true;
 	}
 	return false;
