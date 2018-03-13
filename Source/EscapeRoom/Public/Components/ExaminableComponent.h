@@ -3,7 +3,8 @@
 #pragma once
 
 #include "Engine/Engine.h"
-#include "BaseWidget.h"
+#include "ExaminableWidget.h"
+#include "TargetWidget.h"
 #include "CoreMinimal.h"
 #include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "Components/ActorComponent.h"
@@ -31,14 +32,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable, meta = (MultiLine = true))
 		FString ExamineText = "Don't leave this text naked";
 
-	void OnMouseIn();
-
-	void OnMouseOut();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable)
+		FString ExamineTitle = "";
 
 	void Examine();
 
 	void StopExamining();
 
+	void OnMouseIn();
+
+	void OnMouseOut();
+
 private:
-	AEscapeRoomHUD* _hud;
+	AEscapeRoomHUD * _hud;
 };

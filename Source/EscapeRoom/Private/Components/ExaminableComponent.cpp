@@ -28,20 +28,6 @@ void UExaminableComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UExaminableComponent::OnMouseIn()
-{
-	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
-	primitiveComponent->SetRenderCustomDepth(true);
-	_hud->TargetWidget->ShowExamine = ESlateVisibility::Visible;
-}
-
-void UExaminableComponent::OnMouseOut()
-{
-	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
-	primitiveComponent->SetRenderCustomDepth(false);
-	_hud->TargetWidget->ShowExamine = ESlateVisibility::Hidden;
-}
-
 void UExaminableComponent::Examine()
 {
 	_hud->ExamineWidget->DialogText = ExamineText;
@@ -57,3 +43,20 @@ void UExaminableComponent::StopExamining()
 	OnMouseIn();	
 }
 
+void UExaminableComponent::OnMouseIn()
+{
+	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+	primitiveComponent->SetRenderCustomDepth(true);
+	_hud->TargetWidget->ShowExamine = ESlateVisibility::Visible;
+
+	_hud->TargetWidget->SetExamineTitle(this->ExamineTitle);
+}
+
+void UExaminableComponent::OnMouseOut()
+{
+	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+	primitiveComponent->SetRenderCustomDepth(false);
+	_hud->TargetWidget->ShowExamine = ESlateVisibility::Hidden;
+
+	_hud->TargetWidget->SetExamineTitle(FString(""));
+}

@@ -23,17 +23,17 @@ public:
 		void SetGameState(EEscapeRoomState gameState);
 
 	UFUNCTION(BlueprintCallable, Category = "GameState")
-		EEscapeRoomState GetGameState();
+		EEscapeRoomState GetGameState();	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomHUD)
-		TSubclassOf<class UBaseWidget> TargetWidgetRef;
+		TSubclassOf<class UTargetWidget> TargetWidgetRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EscapeRoomHUD)
-		TSubclassOf<class UBaseWidget> ExamineWidgetRef;
+		TSubclassOf<class UExaminableWidget> ExamineWidgetRef;
 
 
-	class UBaseWidget* TargetWidget;
-	class UBaseWidget* ExamineWidget;
+	class UTargetWidget* TargetWidget;
+	class UExaminableWidget* ExamineWidget;
 
 private:
 	EEscapeRoomState _gameState = EEscapeRoomState::Default;

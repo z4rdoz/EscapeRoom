@@ -2,14 +2,15 @@
 
 #include "EscapeRoomHUD.h"
 #include "Blueprint/UserWidget.h"
-#include "BaseWidget.h"
+#include "ExaminableWidget.h"
+#include "TargetWidget.h"
 
 void AEscapeRoomHUD::BeginPlay()
 {		
 	//Target widget
 	if (TargetWidgetRef)
 	{				
-		TargetWidget = CreateWidget<UBaseWidget>(GetWorld(), TargetWidgetRef);
+		TargetWidget = CreateWidget<UTargetWidget>(GetWorld(), TargetWidgetRef);
 		if (TargetWidget)
 		{			
 			TargetWidget->AddToViewport();
@@ -19,7 +20,7 @@ void AEscapeRoomHUD::BeginPlay()
 	//Examine Widget
 	if (ExamineWidgetRef)
 	{
-		ExamineWidget = CreateWidget<UBaseWidget>(GetWorld(), ExamineWidgetRef);
+		ExamineWidget = CreateWidget<UExaminableWidget>(GetWorld(), ExamineWidgetRef);
 		if (ExamineWidget)
 		{
 			ExamineWidget->AddToViewport();

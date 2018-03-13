@@ -15,16 +15,10 @@ class ESCAPEROOM_API UBaseWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BaseWidget)
-		FString DialogText;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BaseWidget)
-		ESlateVisibility ShowExamine = ESlateVisibility::Hidden;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BaseWidget)
-		ESlateVisibility ShowUse = ESlateVisibility::Hidden;
+	UFUNCTION(BlueprintCallable, Category = "Messaging")
+		void SendMessage(const FString& msg);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BaseWidget)
-		ESlateVisibility ShowTarget = ESlateVisibility::Visible;
-
+	UFUNCTION(BlueprintImplementableEvent, Category = "Messaging")
+		void OnMessageReceived(const FString& msg);
 };
