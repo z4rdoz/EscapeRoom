@@ -43,12 +43,13 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 		AActor* hitActor = hit.GetActor();
 
 		//Handle examine/use target	
-			//Do examining
+		//Do examining/Using
+		//TODO Roll usable and examinable into one base component that highlights, and make them inherit from it.
 		if (!bPressedJump && _hud->GetGameState() != EEscapeRoomState::Examining)
 		{
 			if (hitActor)
 			{
-				UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();
+				UExaminableComponent* examinableNew = hitActor->FindComponentByClass<UExaminableComponent>();				
 				if (_examinable != nullptr && _examinable != examinableNew)
 				{
 					_examinable->OnMouseOut();
@@ -58,6 +59,18 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 					_examinable = examinableNew;
 					_examinable->OnMouseIn();
 				}
+
+				//Same thing for usable. If this goes beyond three repititions, refactor
+				UUsableComponent* usableNew = hitActor->FindComponentByClass<UUsableComponent>();
+				if (_usable != nullptr && _usable != usableNew)
+				{
+					_usable->OnMouseOut();
+				}
+				if (usableNew != nullptr)
+				{
+					_usable = usableNew;
+					_usable->OnMouseIn();
+				}
 			}
 			else
 			{
@@ -65,6 +78,12 @@ void AEscapeRoomCharacter::Tick(float DeltaTime)
 				{
 					_examinable->OnMouseOut();
 					_examinable = nullptr;
+				}
+
+				if (_usable != nullptr)
+				{
+					_usable->OnMouseOut();
+					_usable = nullptr;
 				}
 			}
 		}

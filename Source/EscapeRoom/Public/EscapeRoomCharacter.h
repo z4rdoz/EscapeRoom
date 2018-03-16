@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Casts.h"
 #include "ExaminableComponent.h"
+#include "UsableComponent.h"
 #include "GameFramework/Character.h"
 #include "Widget.h"
 #include "EscapeRoomHUD.h"
@@ -58,6 +59,7 @@ public:
 
 private:
 	UExaminableComponent* _examinable;
+	UUsableComponent* _usable;
 	AEscapeRoomHUD* _hud;
 
 	bool TryStopExamining();
