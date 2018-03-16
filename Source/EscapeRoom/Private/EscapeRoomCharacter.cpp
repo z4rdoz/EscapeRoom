@@ -167,9 +167,9 @@ void AEscapeRoomCharacter::Examine()
 
 void AEscapeRoomCharacter::Use()
 {
-	if (!TryStopExamining())
+	if (!TryStopExamining() && _usable)
 	{
-
+		_usable->Use();
 	}
 }
 
