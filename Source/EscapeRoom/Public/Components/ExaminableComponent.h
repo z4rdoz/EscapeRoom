@@ -32,9 +32,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable, meta = (MultiLine = true))
 		FString ExamineText = "Don't leave this text naked";
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Examinable)
-		FString ExamineTitle = "";
-
 	void Examine();
 
 	void StopExamining();

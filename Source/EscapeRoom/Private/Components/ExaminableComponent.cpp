@@ -32,14 +32,14 @@ void UExaminableComponent::Examine()
 {
 	_hud->ExamineWidget->DialogText = ExamineText;
 	_hud->ExamineWidget->SetVisibility(ESlateVisibility::Visible);
-	_hud->TargetWidget->ShowTarget = ESlateVisibility::Hidden;
+	_hud->TargetWidget->SetVisibility(ESlateVisibility::Hidden);
 	OnMouseOut();
 }
 
 void UExaminableComponent::StopExamining()
 {
 	_hud->ExamineWidget->SetVisibility(ESlateVisibility::Hidden);
-	_hud->TargetWidget->ShowTarget = ESlateVisibility::Visible;
+	_hud->TargetWidget->SetVisibility(ESlateVisibility::Visible);
 	OnMouseIn();	
 }
 
@@ -47,16 +47,12 @@ void UExaminableComponent::OnMouseIn()
 {
 	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 	primitiveComponent->SetRenderCustomDepth(true);
-	_hud->TargetWidget->ShowExamine = ESlateVisibility::Visible;
-
-	_hud->TargetWidget->SetExamineTitle(this->ExamineTitle);
+	_hud->TargetWidget->ExamineVisibility = ESlateVisibility::Visible;
 }
 
 void UExaminableComponent::OnMouseOut()
 {
 	UPrimitiveComponent* primitiveComponent = Cast<UPrimitiveComponent>(GetOwner()->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 	primitiveComponent->SetRenderCustomDepth(false);
-	_hud->TargetWidget->ShowExamine = ESlateVisibility::Hidden;
-
-	_hud->TargetWidget->SetExamineTitle(FString(""));
+	_hud->TargetWidget->ExamineVisibility = ESlateVisibility::Hidden;
 }

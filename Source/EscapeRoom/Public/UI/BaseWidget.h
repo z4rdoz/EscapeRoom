@@ -16,9 +16,4 @@ class ESCAPEROOM_API UBaseWidget : public UUserWidget
 	
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Messaging")
-		void SendMessage(const FString& msg);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Messaging")
-		void OnMessageReceived(const FString& msg);
 };

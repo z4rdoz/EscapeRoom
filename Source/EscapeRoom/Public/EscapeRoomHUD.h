@@ -17,7 +17,7 @@ class ESCAPEROOM_API AEscapeRoomHUD : public AHUD
 	GENERATED_BODY()
 	
 public:
-	void AEscapeRoomHUD::BeginPlay() override;
+	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 		void SetGameState(EEscapeRoomState gameState);
